@@ -1,0 +1,14 @@
+{
+  "name": "marklogic-syslog-server",
+  "version": "0.9.0",
+  "description": "MarkLogic syslog listener",
+  "main": "marklogic-syslog-server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Justin Makeig",
+  "license": "Apache 2.0",
+  "devDependencies": {
+    "glossy": "^0.1.6"
+  }
+}
