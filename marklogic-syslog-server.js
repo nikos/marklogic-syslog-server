@@ -54,10 +54,7 @@ var conn = {
 }
 var db = marklogic.createDatabaseClient(conn);
 
-
-//create an event listener for when a syslog message is recieved
 server.on("message", function (msg, rinfo) {
-  //sanitise the data by replacing single quotes with two single-quotes
   var message = msg.toString();
   if(message.match(/MarkLogic/g)) {
     //console.log(parser.parse(msg.toString('utf8', 0)));
@@ -76,7 +73,6 @@ server.on("message", function (msg, rinfo) {
   }
 });
 
-//create an event listener to tell us that the has successfully opened the syslog port and is listening for messages
 server.on("listening", function () {
   var address = server.address();
   console.log("server listening " + address.address + ":" + address.port);  
