@@ -45,23 +45,59 @@ var TimedBuffer = require('./timed-buffer.js');
  
  // TODO: Make port number externally configurable
 
-var conn = {
-  host: "localhost",
-  port: 8000,
-  database: "Logs",
-  user: "admin",
-  password: "********",
-  authType: "DIGEST"
+var docopt = require('docopt').docopt;
+var doc = [
+  "Usage:", 
+  "  server.js [<port>] [--delay <milliseconds> | --length <messages> | --host <host:port> | --user <user:password> | (--digest | --basic) ] [--help | -h]",
+  "",
+  "Options:",
+  "  -h, --help               Help",
+  "  --delay <milliseconds>   Log buffer delay [default: 1000]",
+  "  --length <messages>      Maximum buffer length before flushing [default: 200]",
+  "  --host <host:port>       The MarkLogic host to write to [default: localhost:8000]",
+  "  --database <name>        The MarkLogic database to write to [default: Logs]",
+  "  --user <user:password>   MarkLogic authentication [default: admin:********]",
+  "  --digest                 HTTP digest authentication",
+  "  --basic                  HTTP basic authentication",
+].join("\n");
+
+var opts = docopt(doc);
+
+if(!opts['<port>']) {opts['<port>'] = 514; } // No way to default arguments in docopt
+else { opts['<port>'] = parseInt(opts['<port>'], 10);}
+
+if(opts['-h'] || opts['--help']) {
+  console.log(doc);
+  process.exit(0);
 }
+
+var host = opts['--host'].split(':');
+var auth = opts['--user'].split(':');
+var conn = {
+  host: host[0],
+  port: parseInt(host[1], 10),
+  database: opts['--database'],
+  user: auth[0],
+  password: auth[1],
+}
+if(opts['--digest'] || opts['--basic']) {
+  if(opts['--digest']) { conn.authType = "DIGEST"; }
+  else if(opts['--basic']) { conn.authType = "BASIC"; }
+} else { // Default auth
+  conn.authType = "DIGEST";
+}
+
+console.log(opts);
 
 
 var db = marklogic.createDatabaseClient(conn);
-var buffer = new TimedBuffer();
+var buffer = new TimedBuffer(parseInt(opts['--delay'], 10), parseInt(opts['--max-length'], 10));
 
 buffer.on('flush', function(messages) {
   console.log("Writing " + messages.length + " messages.");
   db.documents.write(
     messages.map(function(message) {
+      console.log("\t" + message.message);
       return {
         uri: "/" + uuid.v4() + ".json",
         collections: ["logs"],
@@ -104,4 +140,4 @@ server.on("listening", function () {
 
 });
 
-server.bind(5140);
+server.bind(parseInt(opts['<port>'], 10));

@@ -7,7 +7,8 @@ function bind(f, that) {
   }
 }
 
-var TimedBuffer = function(delay) {
+var TimedBuffer = function(delay, length) {
+  this.length = length || 200;
   this.state = [];
   function handleInterval() {
     //console.log("buffer.length: " + this.state.length);
@@ -22,7 +23,7 @@ var TimedBuffer = function(delay) {
 TimedBuffer.prototype = new EventEmitter;
 TimedBuffer.prototype.push = function(value) {
   this.state.push(value);
-  if(this.state.length >= 2000) {
+  if(this.state.length >= this.length) {
     this.emit('flush', this.state);
     this.state = [];
   }

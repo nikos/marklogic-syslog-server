@@ -11,6 +11,7 @@
   "license": "Apache 2.0",
   "dependencies": {
     "buffertools": "^2.1.2",
+    "docopt": "^0.4.1",
     "glossy": "^0.1.6",
     "marklogic": "^1.0.0-ea3",
     "node-uuid": "^1.4.1"
