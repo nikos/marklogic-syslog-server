@@ -87,7 +87,7 @@ if(opts['--digest'] || opts['--basic']) {
   conn.authType = "DIGEST";
 }
 
-console.log(opts);
+//console.log(opts);
 
 
 var db = marklogic.createDatabaseClient(conn);
@@ -116,18 +116,14 @@ buffer.on('flush', function(messages) {
 server.on("message", function (msg, rinfo) {
   
   if(buff.indexOf(msg, "MarkLogic[") > 0) {
-    //console.log(parser.parse(msg.toString('utf8', 0)));
     var msgObj = parser.parse(msg.toString('utf8', 0));
-    //console.log(msgObj);
     
     if(msgObj.message.match(/^MarkLogic\[\d+\]/)) {    
       msgObj.sender = "MarkLogic";
       var msgMatches = msgObj.message.match(/MarkLogic\[(\d+)\]: (.+)\n/);
       msgObj.pID = parseInt(msgMatches[1], 10);
       msgObj.message = msgMatches[2];
-      
       buffer.push(msgObj);
-      
     } else {
       cosole.log("UNEXPECTED: " + msgObj.message);
     }
@@ -136,7 +132,7 @@ server.on("message", function (msg, rinfo) {
 
 server.on("listening", function () {
   var address = server.address();
-  console.log("server listening " + address.address + ":" + address.port);  
+  console.log("Syslog server listening " + address.address + ":" + address.port + "…");
 
 });
 

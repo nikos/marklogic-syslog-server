@@ -3,7 +3,7 @@ var EventEmitter = require('events').EventEmitter;
 
 function bind(f, that) {
   return function() {
-    return f.apply(that);
+    return f.apply(that, arguments);
   }
 }
 
