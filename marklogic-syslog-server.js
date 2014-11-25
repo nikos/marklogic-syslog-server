@@ -48,7 +48,7 @@ var TimedBuffer = require('./timed-buffer.js');
 var docopt = require('docopt').docopt;
 var doc = [
   "Usage:", 
-  "  server.js [<port>] [--delay <milliseconds> | --length <messages> | --host <host:port> | --user <user:password> | (--digest | --basic) ] [--help | -h]",
+  "  marklogic-syslog-server.js [<port>] [--delay <milliseconds> | --length <messages> | --host <host:port> | --user <user:password> | (--digest | --basic) ] [--help | -h]",
   "",
   "Options:",
   "  -h, --help               Help",

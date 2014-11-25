@@ -20,7 +20,7 @@ This says to send all facilities (first `*`) and levels (second `*`) to port `51
 
 ```
 Usage:
-  server.js [<port>] [--delay <milliseconds> | --length <messages> | --host <host:port> | --user <user:password> | (--digest | --basic) ] [--help | -h]
+  marklogic-syslog-server.js [<port>] [--delay <milliseconds> | --length <messages> | --host <host:port> | --user <user:password> | (--digest | --basic) ] [--help | -h]
 
 Options:
   -h, --help               Help
