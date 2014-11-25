@@ -19,6 +19,7 @@ var server = dgram.createSocket('udp4');
 var parser = require('glossy').Parse;
 var uuid = require('node-uuid');
 var marklogic = require('marklogic');
+var buff = require('buffertools');
 
 /*
   <http://wiki.splunk.com/Community:HowTo_Configure_Mac_OS_X_Syslog_To_Forward_Data>
@@ -55,21 +56,35 @@ var conn = {
 var db = marklogic.createDatabaseClient(conn);
 
 server.on("message", function (msg, rinfo) {
-  var message = msg.toString();
-  if(message.match(/MarkLogic/g)) {
+  
+  if(buff.indexOf(msg, "MarkLogic[") > 0) {
     //console.log(parser.parse(msg.toString('utf8', 0)));
-    db.documents.write(
-      {
-        uri: "/" + uuid.v4() + ".json",
-        contentType: "application/json",
-        collections: ["logs"],
-        content: parser.parse(msg.toString('utf8', 0))
-      }
-    ).
-      result(function(response){
-        console.dir(JSON.stringify(response))
-      });
-
+    var msgObj = parser.parse(msg.toString('utf8', 0));
+    //console.log(msgObj);
+    
+    if(msgObj.message.match(/^MarkLogic\[\d+\]/)) {    
+      msgObj.sender = "MarkLogic";
+      var msgMatches = msgObj.message.match(/MarkLogic\[(\d+)\]: (.+)\n/);
+      msgObj.pID = parseInt(msgMatches[1], 10);
+      msgObj.message = msgMatches[2];
+      
+      db.documents.write(
+        {
+          uri: "/" + uuid.v4() + ".json",
+          contentType: "application/json",
+          collections: ["logs"],
+          content: msgObj
+        }
+      ).
+        result(function(response){
+          //console.dir(JSON.stringify(response))
+          console.log(response.documents[0].uri);
+        }, function(error) {
+          console.error(error);
+        });
+    } else {
+      cosole.log("UNEXPECTED: " + msgObj.message);
+    }
   }
 });
 
