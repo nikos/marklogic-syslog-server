@@ -14,7 +14,7 @@ This says to send all facilities (first `*`) and levels (second `*`) to port `51
 
 ## Configuring the Logs database
 
-*TODO*
+Use the UI Configuration Manager [`http://hostname:8002`](http://localhost:8002/) to import [database-config.zip](/jmakeig/marklogic-syslog-server/blob/master/config/database-config.zip?raw=true). This will create (or update) a database named `Logs`. Make sure you also set your syslog logging level on the group from which you’re sending logs. The syslog server host and the MarkLogic host do not need to be (and probably should not) be the same physical machine.
 
 ## Starting the syslog server
 
