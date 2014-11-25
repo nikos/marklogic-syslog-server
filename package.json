@@ -11,7 +11,7 @@
   "license": "Apache 2.0",
   "devDependencies": {
     "glossy": "^0.1.6",
-    "marklogic": "git+ssh://git@github.com:marklogic/node-client-api.git#develop",
+    "marklogic": "^1.0.0-ea3",
     "node-uuid": "^1.4.1"
   }
 }
