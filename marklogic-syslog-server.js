@@ -13,7 +13,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
+//var util = require('util');
+var EventEmitter = require('events').EventEmitter;
 var dgram = require('dgram');
 var server = dgram.createSocket('udp4');
 var parser = require('glossy').Parse;
@@ -53,7 +54,57 @@ var conn = {
   password: "********",
   authType: "DIGEST"
 }
+
+
+function bind(f, that) {
+  return function() {
+    return f.apply(that);
+  }
+}
+
+var TimedBuffer = function(delay) {
+  this.state = [];
+  function handleInterval() {
+    //console.log("buffer.length: " + this.state.length);
+    if(this.state.length) {
+      this.emit('flush', this.state);
+      this.state = [];
+    }
+  }
+  var inteval = setInterval(bind(handleInterval, this), delay || 1000);
+}
+//util.inherits(TimedBuffer, EventEmitter);
+TimedBuffer.prototype = new EventEmitter;
+TimedBuffer.prototype.push = function(value) {
+  this.state.push(value);
+  if(this.state.length >= 2000) {
+    this.emit('flush', this.state);
+    this.state = [];
+  }
+}
+
+
 var db = marklogic.createDatabaseClient(conn);
+var buffer = new TimedBuffer();
+
+buffer.on('flush', function(messages) {
+  console.log("Writing " + messages.length + " messages.");
+  db.documents.write(
+    messages.map(function(message) {
+      return {
+        uri: "/" + uuid.v4() + ".json",
+        collections: ["logs"],
+        content: message
+      }
+    })
+  ).
+    result(function(response){
+      //console.dir(JSON.stringify(response))
+      //console.log(response.documents[0].uri);
+    }, function(error) {
+      console.error(error);
+    });
+});
 
 server.on("message", function (msg, rinfo) {
   
@@ -68,20 +119,8 @@ server.on("message", function (msg, rinfo) {
       msgObj.pID = parseInt(msgMatches[1], 10);
       msgObj.message = msgMatches[2];
       
-      db.documents.write(
-        {
-          uri: "/" + uuid.v4() + ".json",
-          contentType: "application/json",
-          collections: ["logs"],
-          content: msgObj
-        }
-      ).
-        result(function(response){
-          //console.dir(JSON.stringify(response))
-          console.log(response.documents[0].uri);
-        }, function(error) {
-          console.error(error);
-        });
+      buffer.push(msgObj);
+      
     } else {
       cosole.log("UNEXPECTED: " + msgObj.message);
     }
