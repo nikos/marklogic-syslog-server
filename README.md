@@ -1,5 +1,4 @@
-A proof of concept to write MarkLogic messages to a [MarkLogic](http://developer.marklogic.com/) database. 
-
+A proof of concept to route MarkLogic log messages written to syslog to a [MarkLogic](http://developer.marklogic.com/) database. 
 ## Set-up syslogd
 
 Modify `/etc/syslog.conf` to configure syslogd to write messages to a specific UDP port, `5140`.
