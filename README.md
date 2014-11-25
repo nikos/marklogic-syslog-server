@@ -18,6 +18,8 @@ Use the UI Configuration Manager [`http://hostname:8002`](http://localhost:8002/
 
 ## Starting the syslog server
 
+The script has no required parameters. Simply run it from the command-line `./marklogic-syslog-server.js` to use the defaults. 
+
 ```
 Usage:
   marklogic-syslog-server.js [<port>] [--delay <milliseconds> | --length <messages> | --host <host:port> | --user <user:password> | (--digest | --basic) ] [--help | -h]
