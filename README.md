@@ -1,4 +1,11 @@
 A proof of concept to route MarkLogic log messages written to syslog to a [MarkLogic](http://developer.marklogic.com/) database. 
+The syslog server listens to UDP messages on a port. The lifecycle is: 
+
+1. MarkLogic itself or user code running in MarkLogic logs a message (e.g. `xdmp.log()` in JavaScript) 
+2. MarkLogic sends that message to the Error Log (`/var/opt/MarkLogic/Logs/ErrorLog.txt` on Linux) as well as syslog 
+3. syslog, as configured below, hands off those messages to a designated `host:port` over UDP 
+4. The marklogic-syslog-sever running in Node listens on that port, parses each message and writes as a JSON document to a MarkLogic database.  
+
 ## Set-up syslogd
 
 Modify `/etc/syslog.conf` to configure syslogd to write messages to a specific UDP port, `5140`.
@@ -21,7 +28,7 @@ The script has no required parameters. Simply run it from the command-line `./ma
 
 ```
 Usage:
-  marklogic-syslog-server.js [<port>] [--delay <milliseconds> | --length <messages> | --host <host:port> | --user <user:password> | (--digest | --basic) ] [--help | -h]
+  node marklogic-syslog-server.js [<port>] [--delay <milliseconds> | --length <messages> | --host <host:port> | --user <user:password> | (--digest | --basic) ] [--help | -h]
 
 Options:
   -h, --help               Help
