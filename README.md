@@ -16,6 +16,19 @@ Modify `/etc/syslog.conf` to configure syslogd to write messages to a specific U
 
 This says to send all facilities (first `*`) and levels (second `*`) to port `5140` on `localhost`. `514` is the standard syslog port. Make sure to separate the facility-level match patter and the host with tabs, not spaces.
 
+Restart syslogd for the changes to take effect. 
+
+On Linux:
+```shell
+killall -HUP syslogd
+```
+
+On OS X:
+```shell
+sudo launchctl unload /System/Library/LaunchDaemons/com.apple.syslogd.plist
+sudo launchctl load /System/Library/LaunchDaemons/com.apple.syslogd.plist
+```
+
 **Caution:** This will send all syslog messages to port 5140. [I can’t figure](https://superuser.com/questions/844050/syslogd-filter-by-sender) out a way to filter by sender, rather than just the broader facility, which is `daemon` (`3`), in the case of MarkLogic.
 
 ## Configuring the Logs database
