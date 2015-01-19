@@ -42,6 +42,19 @@ sudo launchctl unload /System/Library/LaunchDaemons/com.apple.syslogd.plist
 sudo launchctl load /System/Library/LaunchDaemons/com.apple.syslogd.plist
 ```
 
+Restart syslogd for the changes to take effect. 
+
+On Linux:
+```shell
+killall -HUP syslogd
+```
+
+On OS X:
+```shell
+sudo launchctl unload /System/Library/LaunchDaemons/com.apple.syslogd.plist
+sudo launchctl load /System/Library/LaunchDaemons/com.apple.syslogd.plist
+```
+
 **Caution:** This will send all syslog messages to port 5140. [I can’t figure](https://superuser.com/questions/844050/syslogd-filter-by-sender) out a way to filter by sender, rather than just the broader facility, which is `daemon` (`3`), in the case of MarkLogic.
 
 ## Configuring the Logs database
