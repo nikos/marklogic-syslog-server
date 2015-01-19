@@ -125,7 +125,7 @@ server.on("message", function (msg, rinfo) {
       msgObj.message = msgMatches[2];
       buffer.push(msgObj);
     } else {
-      cosole.log("UNEXPECTED: " + msgObj.message);
+      console.log("UNEXPECTED: " + msgObj.message);
     }
   }
 });
