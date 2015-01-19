@@ -52,7 +52,7 @@ var doc = [
   "",
   "Options:",
   "  -h, --help               Help",
-  "  --delay <milliseconds>   Log buffer delay [default: 1000]",
+  "  --delay <milliseconds>   Log buffer flush delay for writes [default: 1000]",
   "  --length <messages>      Maximum buffer length before flushing [default: 200]",
   "  --host <host:port>       The MarkLogic host to write to [default: localhost:8000]",
   "  --database <name>        The MarkLogic database to write to [default: Logs]",
