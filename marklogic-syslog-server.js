@@ -123,6 +123,7 @@ server.on("message", function (msg, rinfo) {
       var msgMatches = msgObj.message.match(/MarkLogic\[(\d+)\]: (.+)\n/);
       msgObj.pID = parseInt(msgMatches[1], 10);
       msgObj.message = msgMatches[2];
+      delete msgObj.originalMessage;
       buffer.push(msgObj);
     } else {
       console.log("UNEXPECTED: " + msgObj.message);
