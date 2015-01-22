@@ -43,12 +43,12 @@ var TimedBuffer = require('./timed-buffer.js');
   
  */
  
- // TODO: Make port number externally configurable
+// node marklogic-syslog-server.js 5140 --host localhost:3033 --user logs-writer:'********'
 
 var docopt = require('docopt').docopt;
 var doc = [
   "Usage:", 
-  "  marklogic-syslog-server.js [<port>] [--delay <milliseconds> | --length <messages> | --host <host:port> | --user <user:password> | (--digest | --basic) ] [--help | -h]",
+  "  marklogic-syslog-server.js [<port>] [--delay <milliseconds>] [--length <messages>] [--host <host:port>] [--user <user:password>] [(--digest | --basic)] [--help | -h]",
   "",
   "Options:",
   "  -h, --help               Help",
@@ -80,15 +80,13 @@ var conn = {
   user: auth[0],
   password: auth[1],
 }
+
 if(opts['--digest'] || opts['--basic']) {
   if(opts['--digest']) { conn.authType = "DIGEST"; }
   else if(opts['--basic']) { conn.authType = "BASIC"; }
 } else { // Default auth
   conn.authType = "DIGEST";
 }
-
-//console.log(opts);
-
 
 var db = marklogic.createDatabaseClient(conn);
 var buffer = new TimedBuffer(parseInt(opts['--delay'], 1000), parseInt(opts['--max-length'], 25));
