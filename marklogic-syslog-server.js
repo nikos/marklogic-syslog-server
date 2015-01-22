@@ -115,21 +115,63 @@ buffer.on('flush', function(messages) {
     });
 });
 
+// { originalMessage: '<134>Jan 21 22:48:58 MacPro-2600 node[14880]: I AM the one who knocks.: {}\n',
+//   prival: 134,
+//   facilityID: 16,
+//   severityID: 6,
+//   facility: 'local0',
+//   severity: 'info',
+//   type: 'RFC3164',
+//   time: Wed Jan 21 2015 22:48:58 GMT-0800 (PST),
+//   host: 'MacPro-2600',
+//   message: 'node[14880]: I AM the one who knocks.: {}\n' }
+
+
+// { originalMessage: '<29>Jan 21 22:49:32 MacPro-2600 MarkLogic[11486]: App-Services: nope\n',
+//   prival: 29,
+//   facilityID: 3,
+//   severityID: 5,
+//   facility: 'daemon',
+//   severity: 'notice',
+//   type: 'RFC3164',
+//   time: Wed Jan 21 2015 22:49:32 GMT-0800 (PST),
+//   host: 'MacPro-2600',
+//   message: 'MarkLogic[11486]: App-Services: nope\n' }
+// <29>Jan 21 22:49:32 MacPro-2600 MarkLogic[11486]: App-Services: nope
+
+
+
+
 server.on("message", function (msg, rinfo) {
+  var SeverityIndex = [
+      'emergency',
+      'alert',
+      'critical',
+      'error',
+      'warning',
+      'notice',
+      'info',
+      'debug'
+  ];
+
+  // TODO: Parameterize whitelist at the command line
+  var senderWhitelist = ['MarkLogic', 'node'];
   
-  if(buff.indexOf(msg, "MarkLogic[") > 0) {
+  var whitelisted = senderWhitelist.some(function(sender) {
+    return buff.indexOf(msg, sender + '[') > 0;
+  });
+  
+  //console.log(parser.parse(msg.toString('utf8', 0)));
+  if(whitelisted) {
     var msgObj = parser.parse(msg.toString('utf8', 0));
-    
-    if(msgObj.message.match(/^MarkLogic\[\d+\]/)) {    
-      msgObj.sender = "MarkLogic";
-      var msgMatches = msgObj.message.match(/MarkLogic\[(\d+)\]: (.+)\n/);
-      msgObj.pID = parseInt(msgMatches[1], 10);
-      msgObj.message = msgMatches[2];
-      delete msgObj.originalMessage;
-      buffer.push(msgObj);
-    } else {
-      console.log("UNEXPECTED: " + msgObj.message);
-    }
+    var msgMatches = msgObj.message.match(/(.+)\[(\d+)\]: (.*)\n/);
+    msgObj.sender = msgMatches[1];
+    msgObj.pID = parseInt(msgMatches[2], 10);
+    msgObj.message = msgMatches[3];
+    msgObj.severity = SeverityIndex[msgObj.severityID];
+    delete msgObj.originalMessage;
+    console.log(msgObj);
+    buffer.push(msgObj);
   }
 });
 
