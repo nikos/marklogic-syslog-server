@@ -95,10 +95,14 @@ buffer.on('flush', function(messages) {
   console.log("Writing " + messages.length + " messages.");
   db.documents.write(
     messages.map(function(message) {
-      console.log("\t" + message.message.substring(0, 100));
+      console.log('\t' + message.message.substring(0, 100));
       return {
-        uri: "/" + uuid.v4() + ".json",
-        collections: ["logs"],
+        uri: '/' + uuid.v4() + '.json',
+        collections: ['logs'],
+        permissions: [
+          { 'role-name': 'logs-reader', capabilities : ['read'] },
+          { 'role-name': 'logs-writer', capabilities : ['insert', 'update'] }
+        ],
         content: message
       }
     })
