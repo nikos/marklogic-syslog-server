@@ -91,7 +91,7 @@ if(opts['--digest'] || opts['--basic']) {
 
 
 var db = marklogic.createDatabaseClient(conn);
-var buffer = new TimedBuffer(parseInt(opts['--delay'], 10), parseInt(opts['--max-length'], 10));
+var buffer = new TimedBuffer(parseInt(opts['--delay'], 1000), parseInt(opts['--max-length'], 25));
 
 buffer.on('flush', function(messages) {
   console.log("Writing " + messages.length + " messages.");
