@@ -92,10 +92,10 @@ var db = marklogic.createDatabaseClient(conn);
 var buffer = new TimedBuffer(parseInt(opts['--delay'], 1000), parseInt(opts['--max-length'], 25));
 
 buffer.on('flush', function(messages) {
-  console.log("Writing " + messages.length + " messages.");
+  console.log('Writing %d messages', messages.length);
   db.documents.write(
     messages.map(function(message) {
-      console.log('\t' + message.message.substring(0, 100));
+      console.log('\t%s', message.message.substring(0, 100));
       return {
         uri: '/' + uuid.v4() + '.json',
         collections: ['logs'],
@@ -170,14 +170,14 @@ server.on("message", function (msg, rinfo) {
     msgObj.message = msgMatches[3];
     msgObj.severity = SeverityIndex[msgObj.severityID];
     delete msgObj.originalMessage;
-    console.log(msgObj);
+    //console.log(msgObj);
     buffer.push(msgObj);
   }
 });
 
 server.on("listening", function () {
   var address = server.address();
-  console.log("Syslog server listening " + address.address + ":" + address.port + "…");
+  console.log('Syslog server listening %s:%d…', address.address, address.port);
 
 });
 
