@@ -32,32 +32,6 @@ sudo launchctl unload /System/Library/LaunchDaemons/com.apple.syslogd.plist
 sudo launchctl load /System/Library/LaunchDaemons/com.apple.syslogd.plist
 ```
 
-Restart syslogd for the changes to take effect. 
-
-On Linux:
-```shell
-killall -HUP syslogd
-```
-
-On OS X:
-```shell
-sudo launchctl unload /System/Library/LaunchDaemons/com.apple.syslogd.plist
-sudo launchctl load /System/Library/LaunchDaemons/com.apple.syslogd.plist
-```
-
-Restart syslogd for the changes to take effect. 
-
-On Linux:
-```shell
-killall -HUP syslogd
-```
-
-On OS X:
-```shell
-sudo launchctl unload /System/Library/LaunchDaemons/com.apple.syslogd.plist
-sudo launchctl load /System/Library/LaunchDaemons/com.apple.syslogd.plist
-```
-
 **Caution:** This will send all syslog messages to port 5140. [I can’t figure](https://superuser.com/questions/844050/syslogd-filter-by-sender) out a way to filter by sender, rather than just the broader facility, which is `daemon` (`3`), in the case of MarkLogic.
 
 ## Configuring the Logs database
@@ -66,11 +40,11 @@ Use the UI [Configuration Manager](http://localhost:8002/) to import [database-c
 
 ## Starting the syslog server
 
-The script has no required parameters. Simply run it from the command-line `./marklogic-syslog-server.js` to use the defaults. 
+The script has no required parameters. Simply run it from the command-line `./marklogic-syslog-server.js` to use the defaults.
 
 ```
 Usage:
-  node marklogic-syslog-server.js [<port>] [--delay <milliseconds> | --length <messages> | --host <host:port> | --user <user:password> | (--digest | --basic) ] [--help | -h]
+  node marklogic-syslog-server.js <port> [--delay <milliseconds> | --length <messages> | --host <host:port> | --user <user:password> | (--digest | --basic) ] [--help | -h]
 
 Options:
   -h, --help               Help
